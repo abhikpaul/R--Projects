@@ -1,0 +1,253 @@
+---
+title: "Case Study 1"
+author: "Abhik"
+date: "9th October 2021"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    theme: simplex
+    highlight: zenburn
+---
+
+##### To complete this assignment, follow these steps:
+
+1. Download the `Rcasestudy1.Rmd` file from Moodle.
+
+2. Open `Rcasestudy1.Rmd` in RStudio.
+
+3. Replace the "Your Name Here" text in the `author:` field with your own name.
+
+4. Supply your solutions to the homework by editing `Rcasestudy1.Rmd`.
+
+5. When you have completed the homework and have **checked** that your code both runs in the Console and knits correctly when you click `Knit HTML`, rename the R Markdown file to `Rcasestudy1_YourNameHere.Rmd`, and submit on Moodle.  (YourNameHere should be changed to your own name.)
+
+##### Homework tips:
+
+1. Recall the following useful RStudio hotkeys.
+
+|Keystroke      | Description |
+|----------------|-----------------------------------------------------------------------------|
+| `<tab>`        | Autocompletes commands and filenames,  and lists arguments for functions.|
+| `<up>`         | Cycles through previous commands in the console prompt |
+| `<ctrl-up>`    | Lists history of previous commands matching an unfinished one |
+| `<ctrl-enter>` | Runs current line from source window to Console. Good for trying things out ideas from a source file. |
+| `<ESC>`        | Aborts an unfinished command and get out of the + prompt |
+
+
+
+
+**Note**: Shown above are the Windows/Linux keys.  For Mac OS X, the `<ctrl>` key should be substituted with the `<command>` (&#8984;) key.
+
+2. Instead of sending code line-by-line with `<ctrl-enter>`, you can send entire code chunks, and even run all of the code chunks in your .Rmd file. Look under the <Chunks> menu of the Source panel.
+
+3. Run your code in the Console and Knit HTML frequently to check for errors.
+
+4. You may find it easier to solve a problem by interacting only with the Console at first. 
+
+### Problem 1: Vector Boolean operations (15 points)
+
+##### R has two kinds of Boolean operators implemented, single (`&`, `|`) and double (`&&`, `||`).  
+
+One of these operators takes advantage of something called *lazy evaluation* while the other does not.  They also don't behave the same way when applied to *vectors*.  
+
+Read the help file (`help("||")`) and construct some examples to help figure out how the two behave.  
+
+To help you get started, try out the following two examples in your console:
+
+```{r, eval = FALSE}
+# Example:  The variable y.prob2a is never defined.  
+# (Do not define it!)
+# What happens when you run this code?
+x.prob2a <- 5
+(x.prob2a < 10) | (y.prob2a > 2)
+(x.prob2a < 10) || (y.prob2a > 2)
+```
+
+```{r, eval = FALSE}
+# Define vectors
+x.prob2a.vec <- c(TRUE, FALSE, FALSE)
+y.prob2a.vec <- c(TRUE, TRUE, FALSE)
+
+# Apply various Boolean operations to see what happens
+x.prob2a.vec & y.prob2a.vec
+x.prob2a.vec && y.prob2a.vec
+x.prob2a.vec | y.prob2a.vec
+x.prob2a.vec || y.prob2a.vec
+```
+
+Can you explain what's happening?  Write up a brief explanation below.
+
+<font color="#336600">
+
+**When you run line 62 to 64, x.prob2a is defined as 5 and line 63 results in an error message reading:**
+
+#Error: object 'y.prob2a' not found.
+#This happens because the second half of the vector is undefined. single | does not do lazy evaluation, therefore both values must be present for the command to work.
+#When you read line 66, it uses a double 'OR' operator and results in printing the return: [1] TRUE.
+
+#The double 'OR' operator results in 'TRUE' if either side is 'TRUE' while the single 'OR' operator results in an error unless both are defined. (y.prob2a > 2) does not exist, therefore the double 'OR' will only analyze the second half of the command if the first half results in 'FALSE' therefore, the second half was not analyzed because it was not necessary. For the single 'OR' statement, both sides must be defined for it to work.
+
+#explanations are listed next to each command below:
+#x.prob2a.vec & y.prob2a.vec:
+#The return value of a single & symbol will return a vector when the inputs are vectors. For the two vectors being analyzed, it will print 'TRUE' only if both vectors have 'TRUE' listed in the same position. In other words, the first position in both vectors is listed as 'TRUE', therefore the result of running line 73 begins with true. The second positions in both vectors contrast, therefore the result in the line printed out for the second position is 'FALSE'. The third position in both vectors is 'FALSE', therefore it prints out 'FALSE'. The only way for this command to print out 'True' is for the position of both associated vectors to be 'TRUE' otherwise it will always print 'FALSE'.
+
+#x.prob2a.vec && y.prob2a.vec:
+#This command only looks at the first position of each vector and will return only one value from the first position. If both values are 'TRUE' it will return 'TRUE', if both values are 'FALSE' it will return 'FALSE', and if the values do not match, any unmatched combination will return 'FALSE'.
+
+#x.prob2a.vec | y.prob2a.vec: This command uses the 'OR' operator which will return a vector. If both vectors have the term 'TRUE' in the same position, the vector returned will say 'TRUE'. If one vector does not match the other, it also returns 'TRUE'. If both vectors have the term 'FALSE' in the same position, the vector returned will say 'FALSE'.
+
+#x.prob2a.vec || y.prob2a.vec: This command only looks at the first position of each vector and will return only one value from the first position. If both values are 'TRUE' it will return 'TRUE', if both values are 'FALSE' it will return 'FALSE', and if the values do not match, any unmatched combination will return 'TRUE'.
+
+</font>
+
+
+### Problem 2: Indego Bike Share Service (25 points)
+
+All of the questions below are to be answered on the data file Indego_trips_Q4_2016.csv, which is posted on Moodle.  This file has been edited from the data provided by Indego at https://www.rideindego.com/about/data/
+Indego is the bike share service in the City of Philadelphia, and the data file is a listing of every rental from every station for the fourth quarter of 2016.  If you are not familiar with this useful and popular service (there are over 175K rentals in the data file!), I suggest that you read more about it online and visit the stations around our campus.  As a part of the City’s commitment to sharing data, usage information on Indego is provided to residents on a regular basis.  
+
+(a) Create a data frame called Indego.df and read the contents of the csv file into it.
+```{r}
+# Edit me
+setwd("C:/Users/Abhik/Downloads/bharath1517-attachments/")
+Indego.df <- read.csv(file = 'Indego_trips_Q4_2016.csv')
+```
+
+(b)	Get summary information on this data frame.  What are the different pieces of information provided in the file?  How many trips are there total?  How many of these trips are One Way?  How many are Round Trip?  
+```{r}
+# Edit me
+summary(Indego.df)
+head(Indego.df, n = 5)
+sprintf("Total trips is %d", nrow(Indego.df))
+sprintf("There are %d one way trips", length(which(Indego.df$trip_route_category=="One Way")))
+sprintf("There are %d round trips", length(which(Indego.df$trip_route_category=="Round Trip")))
+```
+
+(c) What are the different types of users?(Check passholder_type)  What percentage of the users had the Indego30 pass?  What percentage had the IndegoFlex pass?  What percentage were Walk-up customers?
+
+```{r}
+# Edit me
+sprintf("The different types of users are %s", unique(Indego.df$passholder_type))
+sprintf("%f percentage of the users had the Indego30 pass", length(which(Indego.df$passholder_type=="Indego30"))*100/nrow(Indego.df))
+sprintf("%f percentage of the users had the IndegoFlex pass", length(which(Indego.df$passholder_type=="IndegoFlex"))*100/nrow(Indego.df))
+sprintf("%f percentage of the users were walk-up customers", length(which(Indego.df$passholder_type=="Walk-up"))*100/nrow(Indego.df))
+```
+
+(d) Look at trip #5.  How long did this trip last?  (The duration data is given in seconds.)  What is the station ID where the trip started?  What is the station ID where the trip ended?  Using the station list provided on the above website, can you find the actual address where the trip started and where it ended?
+```{r}
+# Edit me
+a <- Indego.df[5,]
+sprintf("The trip lasted for %d seconds.", a$duration)
+sprintf("The station ID where the trip started is %d", a$start_station_id)
+sprintf("The station ID where the trip ended is %d", a$end_station_id)
+# start_station_id 3010: 15th & Spruce
+# end_station_id 3030: Darien & Catharine
+
+
+#Using the station list provided on the above website, can you find the actual address where the trip started and where it ended?
+library('dplyr')
+library('tidyverse')
+
+Indego_stations_df = read.csv("indego-stations-2021-01-01.csv")
+
+start_st_df <- left_join(Indego.df, Indego_stations_df, by = c("start_station_id" = "Station_ID"))
+end_st_df <- left_join(Indego.df, Indego_stations_df, by = c("end_station_id" = "Station_ID"))
+
+end_st_df2 <- end_st_df %>%
+  select(trip_id, Station_Name, Go_live_date, Status)
+
+Station_nm_withID = left_join(start_st_df, end_st_df2, by = 'trip_id')
+head(Station_nm_withID)
+
+colnames(Station_nm_withID)[which(names(Station_nm_withID) == "Station_Name.x")] <- "start_station_name"
+colnames(Station_nm_withID)[which(names(Station_nm_withID) == "Station_Name.y")] <- "end_station_name"
+
+head(Station_nm_withID[,c("trip_id", "start_station_id", "start_station_name", "end_station_id", "end_station_name")])
+```
+
+(e) If you look at the summary information for this data frame, you will see that there are mins, means, etc provided for the ID number of the starting station and the ID number of the ending station.  However, mean ID number is not a useful quantity.  Convert both of these ID vectors into factors.  Then, rerun the summary() function and report on the top 5 most frequently used starting and ending stations, and how many trips originated or ended at each one.
+
+```{r}
+# Edit me
+summary(Indego.df)
+
+Indego.df$start_station_id <- as.factor(Indego.df$start_station_id)
+Indego.df$end_station_id <- as.factor(Indego.df$end_station_id)
+summary(Indego.df)
+
+library("dplyr")
+
+b <- Indego.df %>%
+  group_by(start_station_id) %>%
+  tally() %>%
+  as.data.frame()
+b <- b[order(b$n, decreasing = TRUE),] #No. of trips in starting stations
+b[1:5,] #Top 5 most frequently used starting stations
+
+c <- Indego.df %>%
+  group_by(end_station_id) %>%
+  tally() %>%
+  as.data.frame()
+c <- c[order(c$n, decreasing = TRUE),] #No. of trips in ending stations
+c[1:5,] #Top 5 most frequently used ending stations
+
+d <- inner_join(b, c, by = c("start_station_id" = "end_station_id"))
+d$n_all <- d$n.x + d$n.y
+d <- d[order(d$n_all, decreasing = TRUE),] #Trips originating or ending at each station
+```
+
+(f) Look up the help file for the plot() function.  Using the information that you just learned, plot the latitude vs. longitude for the starting point of each trip (start_lat and start_lon).
+
+```{r}
+# Edit me
+plot(Indego.df$start_lat, Indego.df$start_lon, xlab = "Start Latitude", ylab = "Start Longitude")
+```
+
+(g) Set a vector t equal to the trip duration.  Then, set tmin equal to t in minutes and thr equal to t in hours.
+
+```{r}
+# Edit me
+t <- as.vector(Indego.df['duration'])
+tmin <- t/60
+thr <- tmin/60
+```
+
+(h) Create a new data frame called indegomktg.df which includes the trip durations in hours and the passholder type.  Output its summary information.
+
+```{r}
+# Edit me
+indegomktg.df <- data.frame(thr, Indego.df$passholder_type)
+colnames(indegomktg.df) <- c('duration', 'passholder_type')
+head(indegomktg.df)
+```
+
+### Problem 3 (10 points)
+(a)	Create a vector called shortpass that includes the passholder types for all the trips that lasted less than 1 hour.  What percentage of the short trips were completed by Indego30 pass holders?
+```{r}
+# Edit me
+shortpass <- indegomktg.df[indegomktg.df['duration'] < 1,]
+head(shortpass)
+sprintf("%f percentage of short trips were completed by Indego30 pass holders", length(which(shortpass$passholder_type=="Indego30"))*100/nrow(shortpass))
+```
+(b)	Assume that you are looking to market podcasts and audiobooks that are stored on the bikes themselves (disposable earphones also available).  The podcasts tend to be around 30-40 minutes in length, whereas an audiobook is generally around 2-3 hours.  There will be short ads in each file which will generate revenue for Indego.  In order to increase the chances that the customers will listen to the offerings (and therefore the ads), figure out a good way to market podcasts or audiobooks at the beginning of the trip based on the passholder type.
+```{r}
+# Edit me
+longpass <- indegomktg.df[indegomktg.df['duration'] >= 2,]
+sprintf("%f percentage of long trips were completed by Walk-up customers", length(which(longpass$passholder_type=="Walk-up"))*100/nrow(longpass))
+
+sprintf("%f percentage of long trips were completed by IndegoFlex", length(which(longpass$passholder_type=="IndegoFlex"))*100/nrow(longpass))
+
+sprintf("%f percentage of long trips were completed by Indego30", length(which(longpass$passholder_type=="Indego30"))*100/nrow(longpass))
+```
+Write up a brief explanation below.
+
+<font color="#336600">
+
+**To figure out how many riders are using the bikes for at least two hours, I created 'long_pass'.**
+#Also, there are significantly less IndegoFlex customers for both long and short trips. For this reason, I would recommend for highest revenue, target Indego30 short trip riders with the podcasts.
+#I would offer audiobooks to Walk-up customers and Indego30 customers because they are the ones with long rides.
+
+#Podcasts will be a good way to generate revenue for Indego30 as more than 88% of short trips are by Indego30 pass holders. Audiobooks will be a good product for Indego30 and Walk-up customers contributing to more than 97% of long trips
+
+</font>
